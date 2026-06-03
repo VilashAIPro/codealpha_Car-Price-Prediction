@@ -3,247 +3,327 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🚗 Car Price Prediction — CodeAlpha ML Project</title>
-  <meta name="description" content="Machine learning project predicting used car prices using Linear Regression, Random Forest, and Gradient Boosting. Built for CodeAlpha Data Science Internship May 2026." />
+  <title>Car Price Prediction — CodeAlpha ML Project</title>
+  <meta name="description" content="Machine learning project predicting used car prices using Linear Regression, Random Forest, and Gradient Boosting — CodeAlpha Data Science Internship May 2026." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- ── NAV ─────────────────────────────────────────────────────────────── -->
+  <!-- ── PAGE LOADER ──────────────────────────────────────────── -->
+  <div id="page-loader">
+    <div class="loader-logo">🚗 CarPredict<span style="color:#F59E0B">AI</span></div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    <div class="loader-text">Loading model results…</div>
+  </div>
+
+  <!-- ── READING PROGRESS ─────────────────────────────────────── -->
+  <div id="progress-bar"></div>
+
+  <!-- ── BACK TO TOP ──────────────────────────────────────────── -->
+  <button id="back-to-top" aria-label="Back to top">↑</button>
+
+  <!-- ── NAVBAR ───────────────────────────────────────────────── -->
   <nav id="navbar">
     <div class="nav-inner">
       <a href="#hero" class="nav-logo">
         <span class="logo-icon">🚗</span>
-        <span>CarPredict<span class="logo-accent">AI</span></span>
+        CarPredict<span class="logo-accent">AI</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#dataset">Dataset</a></li>
-        <li><a href="#pipeline">Pipeline</a></li>
-        <li><a href="#models">Models</a></li>
-        <li><a href="#visualizations">Visuals</a></li>
-        <li><a href="#insights">Insights</a></li>
-        <li><a href="#download" class="nav-cta">Download Dataset</a></li>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about" id="nav-about">About</a></li>
+        <li><a href="#dataset" id="nav-dataset">Dataset</a></li>
+        <li><a href="#pipeline" id="nav-pipeline">Pipeline</a></li>
+        <li><a href="#models" id="nav-models">Models</a></li>
+        <li><a href="#visualizations" id="nav-visuals">Visuals</a></li>
+        <li><a href="#insights" id="nav-insights">Insights</a></li>
+        <li><a href="#download" class="nav-cta" id="nav-download">⬇ Dataset</a></li>
       </ul>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
 
-  <!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+  <!-- ── HERO ─────────────────────────────────────────────────── -->
   <section id="hero">
-    <div class="hero-bg">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
-      <canvas id="particle-canvas"></canvas>
-    </div>
+    <!-- Background decoration -->
+    <div class="hero-blob blob-1"></div>
+    <div class="hero-blob blob-2"></div>
+    <div class="hero-blob blob-3"></div>
+    <div class="hero-grid"></div>
+    <canvas id="particle-canvas"></canvas>
+
     <div class="hero-content">
+      <!-- Badges -->
       <div class="badge-row">
-        <span class="badge badge-pink">CodeAlpha Internship</span>
-        <span class="badge badge-cyan">Task 3 · May 2026</span>
-        <span class="badge badge-gold">Data Science</span>
+        <span class="badge badge-indigo">🎓 CodeAlpha Internship</span>
+        <span class="badge badge-gold">⭐ Task 3 · May 2026</span>
+        <span class="badge badge-purple">📊 Data Science</span>
       </div>
+
       <h1 class="hero-title">
         Car Price<br/>
         <span class="gradient-text">Prediction</span><br/>
         with Machine Learning
       </h1>
+
       <p class="hero-sub">
-        Predict used car selling prices with 96.4% accuracy using<br/>
+        Predict used car selling prices with <strong>96.4% accuracy</strong> using
         Gradient Boosting, Random Forest &amp; Linear Regression on real CarDekho data.
+        Full pipeline: preprocessing → feature engineering → evaluation.
       </p>
+
+      <!-- Stats row -->
       <div class="hero-stats">
         <div class="hstat">
-          <span class="hstat-val" data-target="301">0</span>
+          <span class="hstat-val" id="ctr-cars" data-target="301">0</span>
           <span class="hstat-label">Cars Analysed</span>
         </div>
         <div class="hstat-div"></div>
         <div class="hstat">
-          <span class="hstat-val" data-target="96" data-suffix=".41%">0</span>
+          <span class="hstat-val" id="ctr-r2" data-target="9641" data-decimal="4">0</span>
           <span class="hstat-label">Best R² Score</span>
         </div>
         <div class="hstat-div"></div>
         <div class="hstat">
-          <span class="hstat-val" data-target="3">0</span>
+          <span class="hstat-val" id="ctr-models" data-target="3">0</span>
           <span class="hstat-label">ML Models</span>
         </div>
         <div class="hstat-div"></div>
         <div class="hstat">
-          <span class="hstat-val" data-target="8">0</span>
+          <span class="hstat-val" id="ctr-plots" data-target="8">0</span>
           <span class="hstat-label">Visualisations</span>
         </div>
       </div>
+
       <div class="hero-ctas">
-        <a href="#models" class="btn btn-primary">View Model Results</a>
-        <a href="#download" class="btn btn-ghost">Download Dataset ↓</a>
+        <a href="#models" class="btn btn-primary" id="cta-models">📊 View Model Results</a>
+        <a href="#visualizations" class="btn btn-gold" id="cta-visuals">🎨 See Visualisations</a>
+        <a href="#download" class="btn btn-ghost" id="cta-download">⬇ Download Dataset</a>
       </div>
     </div>
+
     <div class="hero-scroll-hint">
       <span>Scroll to explore</span>
       <div class="scroll-arrow"></div>
     </div>
   </section>
 
-  <!-- ── ABOUT ─────────────────────────────────────────────────────────────── -->
+  <!-- ── ABOUT ─────────────────────────────────────────────────── -->
   <section id="about">
     <div class="container">
       <div class="section-label">About the Project</div>
       <h2 class="section-title">What this project <span class="gradient-text">solves</span></h2>
+      <p class="section-sub">An end-to-end ML pipeline using Python, Pandas, Scikit-learn, and Matplotlib to predict second-hand car prices in the Indian automobile market.</p>
+
       <div class="about-grid">
-        <div class="about-card glass-card" data-animate>
+        <div class="about-card card" data-animate>
           <div class="about-icon">📊</div>
-          <h3>Data Collection</h3>
-          <p>Collected real-world car listings from CarDekho — brand, year, fuel type, transmission, mileage, and showroom price across 301 vehicles.</p>
+          <h3>Brand &amp; Feature Collection</h3>
+          <p>Collected real-world car listings from CarDekho — brand goodwill via present price, year, fuel type, transmission, mileage, and more across 301 vehicles.</p>
         </div>
-        <div class="about-card glass-card" data-animate>
-          <div class="about-icon">⚙️</div>
+        <div class="about-card card" data-animate>
+          <div class="about-icon">🔧</div>
           <h3>Feature Engineering</h3>
-          <p>Engineered Car Age from year, computed Price Depreciation %, label-encoded categorical variables, and scaled all features with StandardScaler.</p>
+          <p>Engineered <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--indigo)">Car_Age</code> from year, computed depreciation %, label-encoded categorical variables, and scaled with StandardScaler.</p>
         </div>
-        <div class="about-card glass-card" data-animate>
+        <div class="about-card card" data-animate>
           <div class="about-icon">🤖</div>
           <h3>Model Training</h3>
-          <p>Trained three regression models — Linear Regression, Random Forest, and Gradient Boosting — with 80/20 train-test split and random_state=42.</p>
+          <p>Trained three regression models with 80/20 split — Linear Regression, Random Forest (100 trees), and Gradient Boosting (100 estimators), all with random_state=42.</p>
         </div>
-        <div class="about-card glass-card" data-animate>
+        <div class="about-card card" data-animate>
           <div class="about-icon">📈</div>
           <h3>Model Evaluation</h3>
-          <p>Evaluated each model on R², MAE, and RMSE. Gradient Boosting emerged best with R²=0.9641, meaning 96.4% of price variance is explained.</p>
+          <p>Evaluated each model on R², MAE and RMSE. Gradient Boosting achieved R²=0.9641, meaning 96.4% of price variance is explained by the 7 input features.</p>
         </div>
-        <div class="about-card glass-card" data-animate>
+        <div class="about-card card" data-animate>
           <div class="about-icon">🎨</div>
-          <h3>Visualisation</h3>
-          <p>Generated 8 publication-quality dark-themed charts using Matplotlib and Seaborn — distribution plots, heatmaps, scatter plots, and feature importance.</p>
+          <h3>8 Visualisations</h3>
+          <p>Generated 8 publication-quality dark-themed charts using Matplotlib and Seaborn — distributions, heatmaps, scatter plots, depreciation curve, and feature importance.</p>
         </div>
-        <div class="about-card glass-card" data-animate>
+        <div class="about-card card" data-animate>
           <div class="about-icon">🌍</div>
           <h3>Real-World Impact</h3>
-          <p>Helps buyers estimate fair used car prices and helps sellers set competitive prices — reducing information asymmetry in the Indian auto market.</p>
+          <p>Helps buyers estimate fair used car prices and helps sellers set competitive prices — reducing information asymmetry in the ₹4+ Lakh average Indian used car market.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── DATASET ────────────────────────────────────────────────────────────── -->
+  <!-- ── DATASET ────────────────────────────────────────────────── -->
   <section id="dataset">
     <div class="container">
       <div class="section-label">Dataset Overview</div>
       <h2 class="section-title">CarDekho <span class="gradient-text">Vehicle Dataset</span></h2>
+
       <div class="dataset-layout">
-        <div class="dataset-info">
+        <!-- Left column -->
+        <div>
           <div class="info-grid">
-            <div class="info-tile glass-card" data-animate>
+            <div class="info-tile card" data-animate>
               <span class="info-icon">📋</span>
-              <div>
-                <div class="info-val">301 Rows</div>
-                <div class="info-key">Total Records</div>
-              </div>
+              <div><div class="info-val">301 Rows</div><div class="info-key">Total Records</div></div>
             </div>
-            <div class="info-tile glass-card" data-animate>
+            <div class="info-tile card" data-animate>
               <span class="info-icon">🔢</span>
-              <div>
-                <div class="info-val">9 Columns</div>
-                <div class="info-key">Features</div>
-              </div>
+              <div><div class="info-val">9 Columns</div><div class="info-key">Features</div></div>
             </div>
-            <div class="info-tile glass-card" data-animate>
+            <div class="info-tile card" data-animate>
               <span class="info-icon">✅</span>
-              <div>
-                <div class="info-val">Zero</div>
-                <div class="info-key">Missing Values</div>
-              </div>
+              <div><div class="info-val">0 Missing</div><div class="info-key">Data Quality</div></div>
             </div>
-            <div class="info-tile glass-card" data-animate>
+            <div class="info-tile card" data-animate>
               <span class="info-icon">📅</span>
-              <div>
-                <div class="info-val">2003–2018</div>
-                <div class="info-key">Year Range</div>
-              </div>
+              <div><div class="info-val">2003–2018</div><div class="info-key">Year Range</div></div>
             </div>
           </div>
 
-          <div class="feature-table-wrap glass-card" data-animate>
-            <h3 class="table-heading">Feature Breakdown</h3>
+          <div class="feature-table-wrap card" data-animate>
+            <div class="table-heading">Feature Breakdown</div>
             <table class="feature-table">
               <thead>
-                <tr><th>Feature</th><th>Type</th><th>Description</th><th>Role</th></tr>
+                <tr>
+                  <th>Feature</th><th>Type</th><th>Description</th><th>Role</th>
+                </tr>
               </thead>
               <tbody>
-                <tr><td>Car_Name</td><td><span class="tag tag-cat">Categorical</span></td><td>Model name (98 unique)</td><td><span class="tag tag-drop">Dropped</span></td></tr>
-                <tr><td>Year</td><td><span class="tag tag-num">Numeric</span></td><td>Manufacturing year</td><td><span class="tag tag-eng">Engineered → Car_Age</span></td></tr>
-                <tr><td>Selling_Price</td><td><span class="tag tag-num">Numeric</span></td><td>Price in Lakhs ₹</td><td><span class="tag tag-target">🎯 Target</span></td></tr>
-                <tr><td>Present_Price</td><td><span class="tag tag-num">Numeric</span></td><td>Showroom price ₹L</td><td><span class="tag tag-feat">Feature</span></td></tr>
-                <tr><td>Driven_kms</td><td><span class="tag tag-num">Numeric</span></td><td>Total km driven</td><td><span class="tag tag-feat">Feature</span></td></tr>
-                <tr><td>Fuel_Type</td><td><span class="tag tag-cat">Categorical</span></td><td>Petrol / Diesel / CNG</td><td><span class="tag tag-feat">Encoded</span></td></tr>
-                <tr><td>Selling_type</td><td><span class="tag tag-cat">Categorical</span></td><td>Dealer / Individual</td><td><span class="tag tag-feat">Encoded</span></td></tr>
-                <tr><td>Transmission</td><td><span class="tag tag-cat">Categorical</span></td><td>Manual / Automatic</td><td><span class="tag tag-feat">Encoded</span></td></tr>
-                <tr><td>Owner</td><td><span class="tag tag-num">Numeric</span></td><td>Previous owners (0/1/3)</td><td><span class="tag tag-feat">Feature</span></td></tr>
+                <tr>
+                  <td><strong>Car_Name</strong></td>
+                  <td><span class="tag tag-cat">Categorical</span></td>
+                  <td>Model name — 98 unique values</td>
+                  <td><span class="tag tag-drop">Dropped</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Year</strong></td>
+                  <td><span class="tag tag-num">Numeric</span></td>
+                  <td>Manufacturing year (2003–2018)</td>
+                  <td><span class="tag tag-eng">→ Car_Age</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Selling_Price</strong></td>
+                  <td><span class="tag tag-num">Numeric</span></td>
+                  <td>Used car price in Lakhs ₹</td>
+                  <td><span class="tag tag-target">🎯 Target</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Present_Price</strong></td>
+                  <td><span class="tag tag-num">Numeric</span></td>
+                  <td>Showroom price in Lakhs ₹</td>
+                  <td><span class="tag tag-feat">Feature</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Driven_kms</strong></td>
+                  <td><span class="tag tag-num">Numeric</span></td>
+                  <td>Total kilometres driven</td>
+                  <td><span class="tag tag-feat">Feature</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Fuel_Type</strong></td>
+                  <td><span class="tag tag-cat">Categorical</span></td>
+                  <td>Petrol / Diesel / CNG</td>
+                  <td><span class="tag tag-eng">Encoded</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Selling_type</strong></td>
+                  <td><span class="tag tag-cat">Categorical</span></td>
+                  <td>Dealer / Individual</td>
+                  <td><span class="tag tag-eng">Encoded</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Transmission</strong></td>
+                  <td><span class="tag tag-cat">Categorical</span></td>
+                  <td>Manual / Automatic</td>
+                  <td><span class="tag tag-eng">Encoded</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Owner</strong></td>
+                  <td><span class="tag tag-num">Numeric</span></td>
+                  <td>Previous owners (0 / 1 / 3)</td>
+                  <td><span class="tag tag-feat">Feature</span></td>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <div class="dataset-stats" data-animate>
-          <div class="glass-card stat-card-main">
-            <h3>Dataset Statistics</h3>
-            <div class="stat-rows">
-              <div class="stat-row">
-                <span class="stat-label">Avg Selling Price</span>
-                <span class="stat-bar-wrap"><span class="stat-bar" style="--w:13%"></span></span>
-                <span class="stat-val pink">₹4.66 L</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-label">Max Selling Price</span>
-                <span class="stat-bar-wrap"><span class="stat-bar" style="--w:100%"></span></span>
-                <span class="stat-val cyan">₹35.00 L</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-label">Min Selling Price</span>
-                <span class="stat-bar-wrap"><span class="stat-bar" style="--w:1%"></span></span>
-                <span class="stat-val orange">₹0.10 L</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-label">Avg Depreciation</span>
-                <span class="stat-bar-wrap"><span class="stat-bar" style="--w:36.6%"></span></span>
-                <span class="stat-val gold">36.6%</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-label">PP–SP Correlation</span>
-                <span class="stat-bar-wrap"><span class="stat-bar" style="--w:88%"></span></span>
-                <span class="stat-val green">0.88</span>
-              </div>
+        <!-- Right column -->
+        <div class="stat-card-main card" data-animate>
+          <h3>Dataset Statistics</h3>
+          <div class="stat-rows">
+            <div class="stat-row">
+              <span class="stat-label">Avg Selling Price</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="--w:13%"></span></span>
+              <span class="stat-val sv-indigo">₹4.66 L</span>
             </div>
-            <hr class="divider"/>
-            <h4>Fuel Type Split</h4>
-            <div class="donut-row">
-              <div class="donut-item">
-                <div class="donut-circle" style="--pct:79.4%;--clr:#FF6B9D"></div>
-                <span class="donut-label">Petrol<br/><strong>239</strong></span>
-              </div>
-              <div class="donut-item">
-                <div class="donut-circle" style="--pct:19.9%;--clr:#00D4FF"></div>
-                <span class="donut-label">Diesel<br/><strong>60</strong></span>
-              </div>
-              <div class="donut-item">
-                <div class="donut-circle" style="--pct:0.7%;--clr:#FFB347"></div>
-                <span class="donut-label">CNG<br/><strong>2</strong></span>
-              </div>
+            <div class="stat-row">
+              <span class="stat-label">Max Selling Price</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="--w:100%"></span></span>
+              <span class="stat-val sv-rose">₹35.00 L</span>
             </div>
-            <hr class="divider"/>
-            <h4>Transmission Split</h4>
-            <div class="split-bar-wrap">
-              <div class="split-bar">
-                <div class="split-seg" style="width:86.7%;background:#69FF94" title="Manual 261"></div>
-                <div class="split-seg" style="width:13.3%;background:#C084FC" title="Automatic 40"></div>
-              </div>
-              <div class="split-labels">
-                <span class="split-label green">Manual — 261 (86.7%)</span>
-                <span class="split-label purple">Automatic — 40 (13.3%)</span>
-              </div>
+            <div class="stat-row">
+              <span class="stat-label">Min Selling Price</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="--w:1%"></span></span>
+              <span class="stat-val sv-purple">₹0.10 L</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Avg Depreciation</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="--w:36.6%"></span></span>
+              <span class="stat-val sv-gold">36.6%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">PP–SP Correlation</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="--w:88%"></span></span>
+              <span class="stat-val sv-emerald">0.88</span>
+            </div>
+          </div>
+
+          <hr class="divider"/>
+
+          <h4>Fuel Type Distribution</h4>
+          <div class="donut-row">
+            <div class="donut-item">
+              <div class="donut-circle" style="--pct:79.4;--clr:#4F46E5"></div>
+              <span class="donut-label">Petrol<br/><strong>239</strong></span>
+            </div>
+            <div class="donut-item">
+              <div class="donut-circle" style="--pct:19.9;--clr:#F59E0B"></div>
+              <span class="donut-label">Diesel<br/><strong>60</strong></span>
+            </div>
+            <div class="donut-item">
+              <div class="donut-circle" style="--pct:0.7;--clr:#7C3AED"></div>
+              <span class="donut-label">CNG<br/><strong>2</strong></span>
+            </div>
+          </div>
+
+          <hr class="divider"/>
+
+          <h4>Transmission Split</h4>
+          <div class="split-bar-wrap">
+            <div class="split-bar">
+              <div class="split-seg" style="width:86.7%;background:#4F46E5" title="Manual — 261"></div>
+              <div class="split-seg" style="width:13.3%;background:#F59E0B" title="Automatic — 40"></div>
+            </div>
+            <div class="split-labels">
+              <span class="split-label sl-indigo">Manual — 261 (86.7%)</span>
+              <span class="split-label sl-gold">Automatic — 40 (13.3%)</span>
+            </div>
+          </div>
+
+          <hr class="divider"/>
+
+          <h4>Seller Type Split</h4>
+          <div class="split-bar-wrap">
+            <div class="split-bar">
+              <div class="split-seg" style="width:64.8%;background:#4F46E5" title="Dealer — 195"></div>
+              <div class="split-seg" style="width:35.2%;background:#10B981" title="Individual — 106"></div>
+            </div>
+            <div class="split-labels">
+              <span class="split-label sl-indigo">Dealer — 195 (64.8%)</span>
+              <span class="split-label" style="color:#059669">Individual — 106 (35.2%)</span>
             </div>
           </div>
         </div>
@@ -251,316 +331,354 @@
     </div>
   </section>
 
-  <!-- ── PIPELINE ───────────────────────────────────────────────────────────── -->
+  <!-- ── PIPELINE ───────────────────────────────────────────────── -->
   <section id="pipeline">
     <div class="container">
       <div class="section-label">Methodology</div>
-      <h2 class="section-title">ML <span class="gradient-text">Pipeline</span> Steps</h2>
+      <h2 class="section-title">ML <span class="gradient-text">Pipeline</span> — Step by Step</h2>
+      <p class="section-sub">Every stage of the workflow, from raw CSV to final predictions and visualisations.</p>
+
       <div class="pipeline-track">
         <div class="pipeline-line"></div>
+
         <div class="pipeline-step" data-animate>
-          <div class="step-bubble step-pink">1</div>
-          <div class="step-card glass-card">
-            <h3>📂 Data Loading</h3>
-            <p>Read <code>car_data.csv</code> using <code>pandas.read_csv()</code>. Verify shape (301×9), dtypes, and confirm zero missing values.</p>
-            <div class="code-snippet">df = pd.read_csv('car_data.csv')<br/>df.isnull().sum()  # → all zeros</div>
+          <div class="step-bubble step-1">01</div>
+          <div class="step-card card">
+            <h3>📂 Data Loading &amp; Exploration</h3>
+            <p>Read <code style="font-family:var(--font-mono);color:var(--indigo)">car_data.csv</code> with pandas. Verify shape (301×9), dtypes, statistical summary, and confirm zero missing values with a full EDA pass.</p>
+            <div class="code-snippet"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+df = pd.read_csv(<span class="str">'car_data.csv'</span>)
+df.isnull().sum()  <span class="kw"># → all zeros ✅</span>
+df.describe()      <span class="kw"># → Avg SP: 4.66, Max: 35.0</span></div>
           </div>
         </div>
+
         <div class="pipeline-step" data-animate>
-          <div class="step-bubble step-cyan">2</div>
-          <div class="step-card glass-card">
+          <div class="step-bubble step-2">02</div>
+          <div class="step-card card">
             <h3>🔧 Feature Engineering</h3>
-            <p>Create <code>Car_Age = 2024 − Year</code>, compute <code>Depreciation_Pct</code>, then drop raw Year, Car_Name and temp columns.</p>
-            <div class="code-snippet">df['Car_Age'] = 2024 - df['Year']<br/>df['Depreciation_Pct'] = (Price_Diff / Present_Price) * 100</div>
+            <p>Create <code style="font-family:var(--font-mono);color:var(--indigo)">Car_Age = 2024 − Year</code> to capture depreciation effect. Compute Depreciation_Pct. Drop raw Year, Car_Name and temporary columns.</p>
+            <div class="code-snippet">df[<span class="str">'Car_Age'</span>]          = <span class="num">2024</span> - df[<span class="str">'Year'</span>]
+df[<span class="str">'Depreciation_Pct'</span>] = (Price_Diff / Present_Price) * <span class="num">100</span>
+df.drop(columns=[<span class="str">'Car_Name'</span>, <span class="str">'Year'</span>], inplace=<span class="kw">True</span>)</div>
           </div>
         </div>
+
         <div class="pipeline-step" data-animate>
-          <div class="step-bubble step-orange">3</div>
-          <div class="step-card glass-card">
-            <h3>⚙️ Preprocessing</h3>
-            <p>Label-encode Fuel_Type, Selling_type, Transmission. Split 80/20 with random_state=42. Apply StandardScaler to all features.</p>
-            <div class="code-snippet">le.fit_transform(df['Fuel_Type'])<br/>X_train, X_test = train_test_split(X, y, test_size=0.2)</div>
+          <div class="step-bubble step-3">03</div>
+          <div class="step-card card">
+            <h3>⚙️ Encoding &amp; Scaling</h3>
+            <p>Label-encode Fuel_Type (CNG=0, Diesel=1, Petrol=2), Selling_type (Dealer=0, Individual=1), and Transmission (Auto=0, Manual=1). Then apply StandardScaler.</p>
+            <div class="code-snippet"><span class="fn">LabelEncoder</span>().fit_transform(df[<span class="str">'Fuel_Type'</span>])
+X_train, X_test = train_test_split(X, y, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>)
+scaler = <span class="fn">StandardScaler</span>().fit(X_train)</div>
           </div>
         </div>
+
         <div class="pipeline-step" data-animate>
-          <div class="step-bubble step-green">4</div>
-          <div class="step-card glass-card">
+          <div class="step-bubble step-4">04</div>
+          <div class="step-card card">
             <h3>🤖 Model Training</h3>
-            <p>Train three regressors on scaled training data: Linear Regression, Random Forest (100 trees), and Gradient Boosting (100 estimators).</p>
-            <div class="code-snippet">RandomForestRegressor(n_estimators=100, random_state=42)<br/>GradientBoostingRegressor(n_estimators=100, random_state=42)</div>
+            <p>Train three regression models on the scaled training set: Linear Regression (baseline), Random Forest (100 trees), and Gradient Boosting (100 estimators, lr=0.1).</p>
+            <div class="code-snippet"><span class="fn">LinearRegression</span>()
+<span class="fn">RandomForestRegressor</span>(n_estimators=<span class="num">100</span>, random_state=<span class="num">42</span>)
+<span class="fn">GradientBoostingRegressor</span>(n_estimators=<span class="num">100</span>, random_state=<span class="num">42</span>)</div>
           </div>
         </div>
+
         <div class="pipeline-step" data-animate>
-          <div class="step-bubble step-purple">5</div>
-          <div class="step-card glass-card">
-            <h3>📊 Evaluation</h3>
-            <p>Evaluate each model on the test set using R², MAE and RMSE. Gradient Boosting achieves the best performance across all three metrics.</p>
-            <div class="code-snippet">r2_score(y_test, y_pred)          # → 0.9641<br/>mean_absolute_error(y_test, y_pred) # → 0.5612</div>
+          <div class="step-bubble step-5">05</div>
+          <div class="step-card card">
+            <h3>📊 Evaluation Metrics</h3>
+            <p>Evaluate all models on the held-out test set using three standard regression metrics: R² (explained variance), MAE (mean absolute error in ₹ Lakhs), and RMSE.</p>
+            <div class="code-snippet">r2_score(y_test, y_pred)           <span class="kw"># → 0.9641 ⭐</span>
+mean_absolute_error(y_test, y_pred) <span class="kw"># → ₹0.5612 L</span>
+np.sqrt(mean_squared_error(...))    <span class="kw"># → ₹0.9088 L</span></div>
           </div>
         </div>
+
         <div class="pipeline-step" data-animate>
-          <div class="step-bubble step-gold">6</div>
-          <div class="step-card glass-card">
-            <h3>🎨 Visualisation</h3>
-            <p>Generate 8 dark-themed plots — price distributions, heatmaps, scatter plots, depreciation curves, model comparison, and feature importance.</p>
-            <div class="code-snippet">matplotlib.use('Agg')  # headless<br/>plt.savefig('plot.png', dpi=150, bbox_inches='tight')</div>
+          <div class="step-bubble step-6">06</div>
+          <div class="step-card card">
+            <h3>🎨 Visualisation Generation</h3>
+            <p>Produce 8 dark-themed plots saved as high-res PNGs (dpi=150). Uses Agg backend for headless rendering. All charts follow a custom colour palette for consistency.</p>
+            <div class="code-snippet">matplotlib.use(<span class="str">'Agg'</span>)  <span class="kw"># headless / server-safe</span>
+plt.savefig(<span class="str">'chart.png'</span>, dpi=<span class="num">150</span>, bbox_inches=<span class="str">'tight'</span>)
+<span class="kw"># 8 charts: distributions, heatmap, scatter, feature imp…</span></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── MODELS ─────────────────────────────────────────────────────────────── -->
+  <!-- ── MODELS ─────────────────────────────────────────────────── -->
   <section id="models">
     <div class="container">
       <div class="section-label">Model Evaluation</div>
       <h2 class="section-title">Performance <span class="gradient-text">Comparison</span></h2>
+      <p class="section-sub">Three regression models trained and evaluated on 80/20 split of 301 CarDekho records.</p>
 
       <div class="models-grid">
         <!-- Linear Regression -->
-        <div class="model-card glass-card" data-animate>
+        <div class="model-card card" data-animate>
           <div class="model-header">
             <div class="model-icon model-lr">📐</div>
             <div>
               <h3>Linear Regression</h3>
-              <span class="model-tag">Baseline</span>
+              <span class="model-badge mb-base">Baseline</span>
             </div>
           </div>
           <div class="metric-list">
             <div class="metric-item">
-              <span class="metric-name">R² Score</span>
-              <div class="metric-bar-track">
-                <div class="metric-bar" style="--w:84.67%;--clr:#00D4FF" data-val="0.8467"></div>
+              <div class="metric-header">
+                <span class="metric-name">R² Score</span>
+                <span class="metric-num mn-indigo" style="font-family:var(--font-mono)">0.8467</span>
               </div>
-              <span class="metric-num cyan">0.8467</span>
+              <div class="metric-bar-track">
+                <div class="metric-bar mb-clr-indigo" style="--w:84.67%"></div>
+              </div>
             </div>
             <div class="metric-item">
-              <span class="metric-name">MAE</span>
-              <div class="metric-bar-track">
-                <div class="metric-bar" style="--w:65%;--clr:#FF6B9D"></div>
+              <div class="metric-header">
+                <span class="metric-name">MAE</span>
+                <span class="metric-num mn-rose" style="font-family:var(--font-mono)">₹1.2219 L</span>
               </div>
-              <span class="metric-num pink">₹1.2219 L</span>
+              <div class="metric-bar-track">
+                <div class="metric-bar mb-clr-rose" style="--w:65%"></div>
+              </div>
             </div>
             <div class="metric-item">
-              <span class="metric-name">RMSE</span>
-              <div class="metric-bar-track">
-                <div class="metric-bar" style="--w:55%;--clr:#FFB347"></div>
+              <div class="metric-header">
+                <span class="metric-name">RMSE</span>
+                <span class="metric-num mn-rose" style="font-family:var(--font-mono)">₹1.8792 L</span>
               </div>
-              <span class="metric-num orange">₹1.8792 L</span>
+              <div class="metric-bar-track">
+                <div class="metric-bar mb-clr-rose" style="--w:55%"></div>
+              </div>
             </div>
           </div>
-          <p class="model-note">Good baseline but assumes linear relationships. Struggles with non-linearities in car pricing.</p>
+          <p class="model-note">Good baseline — assumes linear relationships. Struggles with non-linearities and outliers common in used car pricing.</p>
         </div>
 
         <!-- Random Forest -->
-        <div class="model-card glass-card" data-animate>
+        <div class="model-card card" data-animate>
           <div class="model-header">
             <div class="model-icon model-rf">🌲</div>
             <div>
               <h3>Random Forest</h3>
-              <span class="model-tag tag-good">Strong</span>
+              <span class="model-badge mb-good">Strong</span>
             </div>
           </div>
           <div class="metric-list">
             <div class="metric-item">
-              <span class="metric-name">R² Score</span>
-              <div class="metric-bar-track">
-                <div class="metric-bar" style="--w:96.1%;--clr:#00D4FF"></div>
+              <div class="metric-header">
+                <span class="metric-name">R² Score</span>
+                <span class="metric-num mn-emerald" style="font-family:var(--font-mono)">0.9610</span>
               </div>
-              <span class="metric-num cyan">0.9610</span>
+              <div class="metric-bar-track">
+                <div class="metric-bar mb-clr-indigo" style="--w:96.1%"></div>
+              </div>
             </div>
             <div class="metric-item">
-              <span class="metric-name">MAE</span>
-              <div class="metric-bar-track">
-                <div class="metric-bar" style="--w:33%;--clr:#FF6B9D"></div>
+              <div class="metric-header">
+                <span class="metric-name">MAE</span>
+                <span class="metric-num mn-rose" style="font-family:var(--font-mono)">₹0.6235 L</span>
               </div>
-              <span class="metric-num pink">₹0.6235 L</span>
+              <div class="metric-bar-track">
+                <div class="metric-bar mb-clr-rose" style="--w:33%"></div>
+              </div>
             </div>
             <div class="metric-item">
-              <span class="metric-name">RMSE</span>
-              <div class="metric-bar-track">
-                <div class="metric-bar" style="--w:26%;--clr:#FFB347"></div>
+              <div class="metric-header">
+                <span class="metric-name">RMSE</span>
+                <span class="metric-num mn-rose" style="font-family:var(--font-mono)">₹0.9481 L</span>
               </div>
-              <span class="metric-num orange">₹0.9481 L</span>
+              <div class="metric-bar-track">
+                <div class="metric-bar mb-clr-rose" style="--w:26%"></div>
+              </div>
             </div>
           </div>
-          <p class="model-note">Ensemble of 100 decision trees. Captures complex feature interactions very well.</p>
+          <p class="model-note">Ensemble of 100 decision trees. Captures complex feature interactions very well and is robust to outliers.</p>
         </div>
 
         <!-- Gradient Boosting — BEST -->
-        <div class="model-card glass-card model-best" data-animate>
-          <div class="best-badge">⭐ BEST MODEL</div>
+        <div class="model-card card model-best" data-animate>
+          <div class="best-badge">⭐ Best Model</div>
           <div class="model-header">
             <div class="model-icon model-gb">🚀</div>
             <div>
               <h3>Gradient Boosting</h3>
-              <span class="model-tag tag-best">Champion</span>
+              <span class="model-badge mb-best">Champion</span>
             </div>
           </div>
           <div class="metric-list">
             <div class="metric-item">
-              <span class="metric-name">R² Score</span>
-              <div class="metric-bar-track">
-                <div class="metric-bar" style="--w:96.41%;--clr:#FFD700"></div>
+              <div class="metric-header">
+                <span class="metric-name">R² Score</span>
+                <span class="metric-num mn-gold" style="font-family:var(--font-mono)">0.9641</span>
               </div>
-              <span class="metric-num gold">0.9641</span>
+              <div class="metric-bar-track">
+                <div class="metric-bar mb-clr-gold" style="--w:96.41%"></div>
+              </div>
             </div>
             <div class="metric-item">
-              <span class="metric-name">MAE</span>
-              <div class="metric-bar-track">
-                <div class="metric-bar" style="--w:30%;--clr:#FF6B9D"></div>
+              <div class="metric-header">
+                <span class="metric-name">MAE</span>
+                <span class="metric-num mn-gold" style="font-family:var(--font-mono)">₹0.5612 L</span>
               </div>
-              <span class="metric-num pink">₹0.5612 L</span>
+              <div class="metric-bar-track">
+                <div class="metric-bar mb-clr-gold" style="--w:30%"></div>
+              </div>
             </div>
             <div class="metric-item">
-              <span class="metric-name">RMSE</span>
-              <div class="metric-bar-track">
-                <div class="metric-bar" style="--w:24%;--clr:#FFB347"></div>
+              <div class="metric-header">
+                <span class="metric-name">RMSE</span>
+                <span class="metric-num mn-gold" style="font-family:var(--font-mono)">₹0.9088 L</span>
               </div>
-              <span class="metric-num orange">₹0.9088 L</span>
+              <div class="metric-bar-track">
+                <div class="metric-bar mb-clr-gold" style="--w:24%"></div>
+              </div>
             </div>
           </div>
-          <p class="model-note">Sequential ensemble that corrects errors iteratively. Best on all 3 metrics with lowest prediction error.</p>
+          <p class="model-note">Sequential boosting ensemble that corrects errors iteratively. Best on all 3 metrics — lowest MAE of ±₹0.56 Lakhs.</p>
         </div>
       </div>
 
-      <!-- Comparison Table -->
-      <div class="comparison-table-wrap glass-card" data-animate>
+      <!-- Comparison table -->
+      <div class="comparison-table-wrap card" data-animate>
         <h3>📊 Side-by-Side Comparison</h3>
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th>Model</th>
-              <th>R² Score ↑</th>
-              <th>MAE ↓</th>
-              <th>RMSE ↓</th>
-              <th>Rank</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Linear Regression</td>
-              <td>0.8467</td>
-              <td>1.2219</td>
-              <td>1.8792</td>
-              <td><span class="rank rank-3">3rd</span></td>
-            </tr>
-            <tr>
-              <td>Random Forest</td>
-              <td>0.9610</td>
-              <td>0.6235</td>
-              <td>0.9481</td>
-              <td><span class="rank rank-2">2nd</span></td>
-            </tr>
-            <tr class="best-row">
-              <td><strong>Gradient Boosting ⭐</strong></td>
-              <td><strong class="gold">0.9641</strong></td>
-              <td><strong class="gold">0.5612</strong></td>
-              <td><strong class="gold">0.9088</strong></td>
-              <td><span class="rank rank-1">1st 🏆</span></td>
-            </tr>
-          </tbody>
-        </table>
+        <div style="overflow-x:auto">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>R² Score ↑ (higher better)</th>
+                <th>MAE ↓ (lower better)</th>
+                <th>RMSE ↓ (lower better)</th>
+                <th>Rank</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Linear Regression</td>
+                <td>0.8467</td><td>1.2219</td><td>1.8792</td>
+                <td><span class="rank rank-3">3rd</span></td>
+              </tr>
+              <tr>
+                <td>Random Forest</td>
+                <td>0.9610</td><td>0.6235</td><td>0.9481</td>
+                <td><span class="rank rank-2">2nd</span></td>
+              </tr>
+              <tr class="best-row">
+                <td><strong>Gradient Boosting ⭐</strong></td>
+                <td><strong style="color:var(--gold-d);font-family:var(--font-mono)">0.9641</strong></td>
+                <td><strong style="color:var(--gold-d);font-family:var(--font-mono)">0.5612</strong></td>
+                <td><strong style="color:var(--gold-d);font-family:var(--font-mono)">0.9088</strong></td>
+                <td><span class="rank rank-1">1st 🏆</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ── VISUALIZATIONS ─────────────────────────────────────────────────────── -->
+  <!-- ── VISUALIZATIONS ─────────────────────────────────────────── -->
   <section id="visualizations">
     <div class="container">
       <div class="section-label">Exploratory Data Analysis</div>
       <h2 class="section-title">8 Dark-Themed <span class="gradient-text">Visualisations</span></h2>
-      <p class="section-sub">All plots generated with Matplotlib &amp; Seaborn using a custom dark theme palette.</p>
+      <p class="section-sub">Click any chart to expand it. All plots generated with Matplotlib &amp; Seaborn using a custom dark colour palette.</p>
 
       <div class="viz-grid">
-        <div class="viz-card glass-card" data-animate onclick="openLightbox('price_distribution.png','🚗 Car Price Distribution Analysis')">
+        <div class="viz-card card" data-animate id="viz-1" onclick="openLightbox('price_distribution.png','Price Distribution Analysis')">
           <div class="viz-img-wrap">
             <img src="price_distribution.png" alt="Price Distribution" loading="lazy" />
-            <div class="viz-overlay"><span>🔍 Click to expand</span></div>
+            <div class="viz-overlay"><span>🔍 Expand</span></div>
           </div>
           <div class="viz-info">
             <span class="viz-num">01</span>
             <div>
               <h4>Price Distribution</h4>
-              <p>Histogram of Selling &amp; Present prices with mean lines</p>
+              <p>Selling &amp; Present price histograms with mean lines</p>
             </div>
           </div>
         </div>
 
-        <div class="viz-card glass-card" data-animate onclick="openLightbox('correlation_heatmap.png','🔥 Feature Correlation Heatmap')">
+        <div class="viz-card card" data-animate id="viz-2" onclick="openLightbox('correlation_heatmap.png','Feature Correlation Heatmap')">
           <div class="viz-img-wrap">
             <img src="correlation_heatmap.png" alt="Correlation Heatmap" loading="lazy" />
-            <div class="viz-overlay"><span>🔍 Click to expand</span></div>
+            <div class="viz-overlay"><span>🔍 Expand</span></div>
           </div>
           <div class="viz-info">
             <span class="viz-num">02</span>
             <div>
               <h4>Correlation Heatmap</h4>
-              <p>Pearson correlations between all numeric features</p>
+              <p>Pearson correlations across all numeric features</p>
             </div>
           </div>
         </div>
 
-        <div class="viz-card glass-card" data-animate onclick="openLightbox('price_by_category.png','💰 Avg Selling Price by Category')">
+        <div class="viz-card card" data-animate id="viz-3" onclick="openLightbox('price_by_category.png','Avg Price by Category')">
           <div class="viz-img-wrap">
             <img src="price_by_category.png" alt="Price by Category" loading="lazy" />
-            <div class="viz-overlay"><span>🔍 Click to expand</span></div>
+            <div class="viz-overlay"><span>🔍 Expand</span></div>
           </div>
           <div class="viz-info">
             <span class="viz-num">03</span>
             <div>
               <h4>Price by Category</h4>
-              <p>Avg price by Fuel Type, Transmission &amp; Seller Type</p>
+              <p>Avg price by Fuel Type, Transmission &amp; Seller</p>
             </div>
           </div>
         </div>
 
-        <div class="viz-card glass-card" data-animate onclick="openLightbox('price_scatter.png','🔍 Present Price vs Selling Price')">
+        <div class="viz-card card" data-animate id="viz-4" onclick="openLightbox('price_scatter.png','Present vs Selling Price Scatter')">
           <div class="viz-img-wrap">
             <img src="price_scatter.png" alt="Price Scatter" loading="lazy" />
-            <div class="viz-overlay"><span>🔍 Click to expand</span></div>
+            <div class="viz-overlay"><span>🔍 Expand</span></div>
           </div>
           <div class="viz-info">
             <span class="viz-num">04</span>
             <div>
               <h4>Price Scatter Plot</h4>
-              <p>Present vs Selling price with trend line (corr=0.88)</p>
+              <p>Present vs Selling price — corr = 0.88</p>
             </div>
           </div>
         </div>
 
-        <div class="viz-card glass-card" data-animate onclick="openLightbox('age_vs_price.png','📉 Car Age vs Average Selling Price')">
+        <div class="viz-card card" data-animate id="viz-5" onclick="openLightbox('age_vs_price.png','Car Age vs Avg Selling Price')">
           <div class="viz-img-wrap">
             <img src="age_vs_price.png" alt="Age vs Price" loading="lazy" />
-            <div class="viz-overlay"><span>🔍 Click to expand</span></div>
+            <div class="viz-overlay"><span>🔍 Expand</span></div>
           </div>
           <div class="viz-info">
             <span class="viz-num">05</span>
             <div>
               <h4>Age vs Price Curve</h4>
-              <p>Depreciation curve — how price falls with car age</p>
+              <p>How price depreciates with car age over years</p>
             </div>
           </div>
         </div>
 
-        <div class="viz-card glass-card" data-animate onclick="openLightbox('actual_vs_predicted.png','🎯 Actual vs Predicted — All Models')">
+        <div class="viz-card card" data-animate id="viz-6" onclick="openLightbox('actual_vs_predicted.png','Actual vs Predicted — All Models')">
           <div class="viz-img-wrap">
             <img src="actual_vs_predicted.png" alt="Actual vs Predicted" loading="lazy" />
-            <div class="viz-overlay"><span>🔍 Click to expand</span></div>
+            <div class="viz-overlay"><span>🔍 Expand</span></div>
           </div>
           <div class="viz-info">
             <span class="viz-num">06</span>
             <div>
               <h4>Actual vs Predicted</h4>
-              <p>Scatter of real vs predicted prices for all 3 models</p>
+              <p>Real vs predicted prices for all 3 models</p>
             </div>
           </div>
         </div>
 
-        <div class="viz-card glass-card" data-animate onclick="openLightbox('model_comparison.png','🏆 Model Performance Comparison')">
+        <div class="viz-card card" data-animate id="viz-7" onclick="openLightbox('model_comparison.png','Model Performance Comparison')">
           <div class="viz-img-wrap">
             <img src="model_comparison.png" alt="Model Comparison" loading="lazy" />
-            <div class="viz-overlay"><span>🔍 Click to expand</span></div>
+            <div class="viz-overlay"><span>🔍 Expand</span></div>
           </div>
           <div class="viz-info">
             <span class="viz-num">07</span>
@@ -571,16 +689,16 @@
           </div>
         </div>
 
-        <div class="viz-card glass-card" data-animate onclick="openLightbox('feature_importance.png','🔑 Feature Importance — Random Forest')">
+        <div class="viz-card card" data-animate id="viz-8" onclick="openLightbox('feature_importance.png','Feature Importance — Random Forest')">
           <div class="viz-img-wrap">
             <img src="feature_importance.png" alt="Feature Importance" loading="lazy" />
-            <div class="viz-overlay"><span>🔍 Click to expand</span></div>
+            <div class="viz-overlay"><span>🔍 Expand</span></div>
           </div>
           <div class="viz-info">
             <span class="viz-num">08</span>
             <div>
               <h4>Feature Importance</h4>
-              <p>Which features matter most — Random Forest ranking</p>
+              <p>Which features drive predictions — RF ranking</p>
             </div>
           </div>
         </div>
@@ -589,86 +707,102 @@
   </section>
 
   <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
-    <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()" role="dialog" aria-modal="true">
+    <button class="lb-close" id="lb-close-btn" onclick="closeLightbox()" aria-label="Close">✕</button>
     <div class="lb-inner" onclick="event.stopPropagation()">
       <div class="lb-title" id="lb-title"></div>
       <img id="lb-img" src="" alt="" />
     </div>
   </div>
 
-  <!-- ── INSIGHTS ───────────────────────────────────────────────────────────── -->
+  <!-- ── INSIGHTS ───────────────────────────────────────────────── -->
   <section id="insights">
     <div class="container">
       <div class="section-label">Key Takeaways</div>
       <h2 class="section-title">Project <span class="gradient-text">Insights</span></h2>
+      <p class="section-sub">The most significant patterns discovered during EDA and model analysis.</p>
+
       <div class="insights-grid">
-        <div class="insight-card glass-card" data-animate>
-          <div class="insight-icon pink">🔑</div>
-          <h3>Top Predictor</h3>
-          <p><strong>Present_Price</strong> is the strongest predictor with <strong>0.88 correlation</strong> to Selling_Price. Current showroom price drives resale value more than any other feature.</p>
+        <div class="insight-card card" data-animate>
+          <div class="insight-icon-wrap ii-indigo">🔑</div>
+          <div class="insight-body">
+            <h3>Top Predictor</h3>
+            <p><strong>Present_Price</strong> is the strongest predictor with <strong>0.88 correlation</strong> to Selling_Price. Current showroom price drives resale value more than any other feature.</p>
+          </div>
         </div>
-        <div class="insight-card glass-card" data-animate>
-          <div class="insight-icon cyan">⛽</div>
-          <h3>Diesel Premium</h3>
-          <p>Diesel cars command a massive <strong>+₹7.02 Lakh</strong> premium over petrol (avg ₹10.28L vs ₹3.26L) due to better fuel efficiency and torque for long-distance use.</p>
+        <div class="insight-card card" data-animate>
+          <div class="insight-icon-wrap ii-gold">⛽</div>
+          <div class="insight-body">
+            <h3>Diesel Premium</h3>
+            <p>Diesel cars command a massive <strong>+₹7.02 Lakh</strong> premium over petrol (avg ₹10.28L vs ₹3.26L) due to better fuel efficiency and torque for long-distance use.</p>
+          </div>
         </div>
-        <div class="insight-card glass-card" data-animate>
-          <div class="insight-icon gold">⚙️</div>
-          <h3>Automatic Luxury</h3>
-          <p>Automatic transmission cars sell at <strong>+₹5.49 Lakh</strong> more than manuals (avg ₹9.42L vs ₹3.93L) — reflecting their premium positioning in the Indian market.</p>
+        <div class="insight-card card" data-animate>
+          <div class="insight-icon-wrap ii-purple">⚙️</div>
+          <div class="insight-body">
+            <h3>Automatic Luxury Tax</h3>
+            <p>Automatic transmission cars sell at <strong>+₹5.49 Lakh</strong> more than manuals (avg ₹9.42L vs ₹3.93L) — reflecting their premium positioning in the Indian market.</p>
+          </div>
         </div>
-        <div class="insight-card glass-card" data-animate>
-          <div class="insight-icon green">📉</div>
-          <h3>Depreciation Curve</h3>
-          <p>Cars depreciate by an average of <strong>36.6%</strong> from showroom price. The steepest drop happens within the first 3–5 years of ownership.</p>
+        <div class="insight-card card" data-animate>
+          <div class="insight-icon-wrap ii-green">📉</div>
+          <div class="insight-body">
+            <h3>Depreciation Curve</h3>
+            <p>Cars depreciate by an average of <strong>36.6%</strong> from showroom price. The steepest drop occurs within the first 3–5 years — confirming the Car_Age feature's value.</p>
+          </div>
         </div>
-        <div class="insight-card glass-card" data-animate>
-          <div class="insight-icon purple">🚀</div>
-          <h3>Gradient Boosting Wins</h3>
-          <p>Gradient Boosting outperforms all models with <strong>R²=0.9641</strong>, predicting prices within ±₹0.56 Lakhs on average — far better than linear regression's ±₹1.22L.</p>
+        <div class="insight-card card" data-animate>
+          <div class="insight-icon-wrap ii-sky">🚀</div>
+          <div class="insight-body">
+            <h3>Gradient Boosting Wins</h3>
+            <p>Gradient Boosting outperforms all models with <strong>R²=0.9641</strong>, predicting prices within ±₹0.56 Lakhs on average — 2× better than linear regression's ±₹1.22L.</p>
+          </div>
         </div>
-        <div class="insight-card glass-card" data-animate>
-          <div class="insight-icon orange">👤</div>
-          <h3>Owner History Matters</h3>
-          <p>First-owner cars (0 prev owners = 290 records) dominate the dataset. Multiple-owner cars show measurable depreciation, though the effect is smaller than fuel/transmission type.</p>
+        <div class="insight-card card" data-animate>
+          <div class="insight-icon-wrap ii-rose">👤</div>
+          <div class="insight-body">
+            <h3>First-Owner Dominance</h3>
+            <p>First-owner cars (prev_owners=0) represent <strong>96.3%</strong> of the dataset (290 records). Multiple-owner cars show measurable extra depreciation beyond fuel and transmission effects.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── TECH STACK ─────────────────────────────────────────────────────────── -->
+  <!-- ── TECH STACK ─────────────────────────────────────────────── -->
   <section id="tech">
     <div class="container">
       <div class="section-label">Tools Used</div>
       <h2 class="section-title">Tech <span class="gradient-text">Stack</span></h2>
+      <p class="section-sub">Industry-standard Python data science libraries used throughout this project.</p>
+
       <div class="tech-grid">
-        <div class="tech-card glass-card" data-animate>
+        <div class="tech-card card" data-animate>
           <div class="tech-logo">🐍</div>
           <div class="tech-name">Python 3.14</div>
           <div class="tech-role">Core Language</div>
         </div>
-        <div class="tech-card glass-card" data-animate>
+        <div class="tech-card card" data-animate>
           <div class="tech-logo">🐼</div>
           <div class="tech-name">Pandas</div>
           <div class="tech-role">Data Manipulation</div>
         </div>
-        <div class="tech-card glass-card" data-animate>
+        <div class="tech-card card" data-animate>
           <div class="tech-logo">🔢</div>
           <div class="tech-name">NumPy</div>
           <div class="tech-role">Numerical Computing</div>
         </div>
-        <div class="tech-card glass-card" data-animate>
+        <div class="tech-card card" data-animate>
           <div class="tech-logo">🤖</div>
           <div class="tech-name">Scikit-learn</div>
           <div class="tech-role">ML Models &amp; Preprocessing</div>
         </div>
-        <div class="tech-card glass-card" data-animate>
+        <div class="tech-card card" data-animate>
           <div class="tech-logo">📊</div>
           <div class="tech-name">Matplotlib</div>
           <div class="tech-role">Data Visualisation</div>
         </div>
-        <div class="tech-card glass-card" data-animate>
+        <div class="tech-card card" data-animate>
           <div class="tech-logo">🎨</div>
           <div class="tech-name">Seaborn</div>
           <div class="tech-role">Statistical Plots</div>
@@ -677,60 +811,60 @@
     </div>
   </section>
 
-  <!-- ── DOWNLOAD ───────────────────────────────────────────────────────────── -->
+  <!-- ── DOWNLOAD ───────────────────────────────────────────────── -->
   <section id="download">
     <div class="container">
-      <div class="download-card glass-card" data-animate>
+      <div class="download-card card" data-animate>
         <div class="download-left">
           <div class="section-label">Get the Data</div>
           <h2>Download the <span class="gradient-text">Dataset</span></h2>
-          <p>The CarDekho Vehicle Dataset contains 301 used car listings with 9 features including brand, year, fuel type, transmission, mileage and price. Use it to train your own models!</p>
+          <p>The CarDekho Vehicle Dataset — 301 real used car listings from the Indian automobile market with 9 features. Clean, complete, and ready to use with pandas instantly.</p>
           <ul class="dl-facts">
-            <li>✅ 301 rows × 9 columns</li>
-            <li>✅ Zero missing values</li>
-            <li>✅ CSV format — works with Pandas instantly</li>
-            <li>✅ Real Indian market data (2003–2018)</li>
+            <li>✅ 301 rows × 9 columns, zero missing values</li>
+            <li>✅ CSV format — works with <code style="font-family:var(--font-mono);font-size:0.9em;color:var(--indigo)">pd.read_csv()</code> instantly</li>
+            <li>✅ Real Indian market data from 2003–2018</li>
+            <li>✅ Target: Selling_Price in Lakhs ₹</li>
+            <li>✅ Correlation(PP, SP) = 0.88</li>
           </ul>
           <div class="dl-buttons">
-            <a href="car_data.csv" download="car_data.csv" class="btn btn-primary btn-lg">
+            <a href="car_data.csv" download="car_data.csv" class="btn btn-primary btn-lg" id="dl-csv">
               ⬇ Download car_data.csv
             </a>
             <a href="https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho"
-               target="_blank" rel="noopener" class="btn btn-ghost btn-lg">
+               target="_blank" rel="noopener" class="btn btn-outline btn-lg" id="dl-kaggle">
               🔗 View on Kaggle
             </a>
           </div>
         </div>
+
         <div class="download-right">
-          <div class="csv-preview glass-card">
+          <div class="csv-preview">
             <div class="csv-header">
               <span class="csv-dot red"></span>
               <span class="csv-dot yellow"></span>
               <span class="csv-dot green-dot"></span>
-              <span class="csv-file">car_data.csv</span>
+              <span class="csv-file">car_data.csv — 301 rows × 9 cols</span>
             </div>
             <div class="csv-content">
               <div class="csv-row csv-head">
                 <span>Car_Name</span><span>Year</span><span>Selling_Price</span><span>Fuel_Type</span>
               </div>
               <div class="csv-row">
-                <span class="pink">ritz</span><span>2014</span><span class="green">3.35</span><span class="cyan">Petrol</span>
+                <span class="c-pink">ritz</span><span style="color:#CDD6F4">2014</span><span class="c-green">3.35</span><span class="c-cyan">Petrol</span>
               </div>
               <div class="csv-row">
-                <span class="pink">sx4</span><span>2013</span><span class="green">4.75</span><span class="cyan">Diesel</span>
+                <span class="c-pink">sx4</span><span style="color:#CDD6F4">2013</span><span class="c-green">4.75</span><span class="c-cyan">Diesel</span>
               </div>
               <div class="csv-row">
-                <span class="pink">ciaz</span><span>2017</span><span class="green">7.25</span><span class="cyan">Petrol</span>
+                <span class="c-pink">ciaz</span><span style="color:#CDD6F4">2017</span><span class="c-green">7.25</span><span class="c-cyan">Petrol</span>
               </div>
               <div class="csv-row">
-                <span class="pink">wagon r</span><span>2011</span><span class="green">2.85</span><span class="cyan">Petrol</span>
+                <span class="c-pink">wagon r</span><span style="color:#CDD6F4">2011</span><span class="c-green">2.85</span><span class="c-cyan">Petrol</span>
               </div>
               <div class="csv-row">
-                <span class="pink">swift</span><span>2014</span><span class="green">4.60</span><span class="cyan">Diesel</span>
+                <span class="c-pink">swift</span><span style="color:#CDD6F4">2014</span><span class="c-green">4.60</span><span class="c-cyan">Diesel</span>
               </div>
-              <div class="csv-row csv-ellipsis">
-                <span>· · · 296 more rows · · ·</span>
-              </div>
+              <div class="csv-ellipsis">· · · 296 more rows · · ·</div>
             </div>
           </div>
         </div>
@@ -738,13 +872,13 @@
     </div>
   </section>
 
-  <!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+  <!-- ── FOOTER ─────────────────────────────────────────────────── -->
   <footer id="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
           <div class="footer-logo">🚗 CarPredict<span class="logo-accent">AI</span></div>
-          <p>A CodeAlpha Data Science Internship project applying machine learning to predict used car prices in the Indian automobile market.</p>
+          <p>A CodeAlpha Data Science Internship project applying machine learning to predict used car prices in the Indian automobile market with 96.4% accuracy.</p>
         </div>
         <div class="footer-links">
           <h4>Project</h4>
@@ -752,7 +886,7 @@
             <li><a href="#about">About</a></li>
             <li><a href="#dataset">Dataset</a></li>
             <li><a href="#pipeline">Pipeline</a></li>
-            <li><a href="#models">Models</a></li>
+            <li><a href="#models">Model Results</a></li>
           </ul>
         </div>
         <div class="footer-links">
@@ -767,16 +901,16 @@
         <div class="footer-links">
           <h4>Tech Stack</h4>
           <ul>
-            <li><a href="#">Python &amp; Pandas</a></li>
+            <li><a href="#">Python 3.14</a></li>
+            <li><a href="#">Pandas &amp; NumPy</a></li>
             <li><a href="#">Scikit-learn</a></li>
-            <li><a href="#">Matplotlib</a></li>
-            <li><a href="#">Seaborn</a></li>
+            <li><a href="#">Matplotlib &amp; Seaborn</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>Built by <strong>Vilash Kumar Reddy</strong> · CodeAlpha Data Science Intern · May Batch 2026</p>
-        <p class="footer-copy">© 2026 CarPredictAI · All rights reserved</p>
+        <p>Built by <strong style="color:#D1D5DB">Vilash Kumar Reddy</strong> · CodeAlpha Data Science Intern · May Batch 2026</p>
+        <p>© 2026 CarPredictAI · All rights reserved</p>
       </div>
     </div>
   </footer>

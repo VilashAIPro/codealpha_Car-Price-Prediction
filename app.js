@@ -1,79 +1,118 @@
 /* ============================================================
-   CAR PRICE PREDICTION — app.js
+   CAR PRICE PREDICTION — app.js (Light Theme)
    Author: Vilash Kumar Reddy | CodeAlpha May 2026
    ============================================================ */
+
+// ── PAGE LOADER ────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('page-loader');
+    if (loader) loader.classList.add('hidden');
+  }, 1300);
+});
+
+// ── READING PROGRESS BAR ───────────────────────────────────────
+const progressBar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const scrollTop  = window.scrollY;
+  const docHeight  = document.documentElement.scrollHeight - window.innerHeight;
+  const pct        = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = pct + '%';
+}, { passive: true });
 
 // ── NAVBAR SCROLL ──────────────────────────────────────────────
 const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 40);
-});
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+}, { passive: true });
 
 // ── HAMBURGER MENU ─────────────────────────────────────────────
 const hamburger = document.getElementById('hamburger');
-const navLinks  = document.querySelector('.nav-links');
+const navLinks  = document.getElementById('nav-links');
+
 hamburger.addEventListener('click', () => {
-  navLinks.classList.toggle('open');
+  const open = navLinks.classList.toggle('open');
+  hamburger.setAttribute('aria-expanded', open);
 });
-document.querySelectorAll('.nav-links a').forEach(a => {
+
+// close when link clicked
+navLinks.querySelectorAll('a').forEach(a => {
   a.addEventListener('click', () => navLinks.classList.remove('open'));
 });
 
-// ── SMOOTH ACTIVE NAV LINK ─────────────────────────────────────
+// close on outside click
+document.addEventListener('click', e => {
+  if (!navbar.contains(e.target)) navLinks.classList.remove('open');
+});
+
+// ── ACTIVE NAV HIGHLIGHTING ────────────────────────────────────
 const sections = document.querySelectorAll('section[id]');
 const navItems = document.querySelectorAll('.nav-links a[href^="#"]');
 
-const navObserver = new IntersectionObserver((entries) => {
+const activeObserver = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
       navItems.forEach(a => a.classList.remove('active'));
-      const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
-      if (active) active.classList.add('active');
+      const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
     }
   });
-}, { rootMargin: '-40% 0px -55% 0px' });
+}, { rootMargin: '-35% 0px -60% 0px' });
 
-sections.forEach(s => navObserver.observe(s));
+sections.forEach(s => activeObserver.observe(s));
 
-// ── SCROLL REVEAL ──────────────────────────────────────────────
+// ── SCROLL-REVEAL ANIMATIONS ───────────────────────────────────
 const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach((e, i) => {
+  entries.forEach(e => {
     if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      e.target.classList.add('visible');
       revealObserver.unobserve(e.target);
     }
   });
-}, { threshold: 0.1 });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
 
-document.querySelectorAll('[data-animate]').forEach(el => revealObserver.observe(el));
+document.querySelectorAll('[data-animate]').forEach((el, i) => {
+  // stagger within same parent grid
+  const siblings = el.parentElement.querySelectorAll('[data-animate]');
+  let delay = 0;
+  siblings.forEach((sib, idx) => { if (sib === el) delay = idx * 80; });
+  el.style.transitionDelay = delay + 'ms';
+  revealObserver.observe(el);
+});
 
-// ── ANIMATE STAT BARS ──────────────────────────────────────────
+// ── ANIMATED METRIC & STAT BARS ────────────────────────────────
 const barObserver = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
-      e.target.querySelectorAll('.stat-bar, .metric-bar').forEach(bar => {
-        bar.classList.add('animated');
-      });
+      e.target.querySelectorAll('.stat-bar, .metric-bar').forEach(b => b.classList.add('animated'));
       barObserver.unobserve(e.target);
     }
   });
-}, { threshold: 0.3 });
+}, { threshold: 0.2 });
 
 document.querySelectorAll('.stat-card-main, .model-card').forEach(el => barObserver.observe(el));
 
 // ── COUNTER ANIMATION ──────────────────────────────────────────
 function animateCounter(el) {
-  const target = parseFloat(el.dataset.target);
-  const suffix = el.dataset.suffix || '';
-  const duration = 1800;
-  const start    = performance.now();
+  const raw     = parseInt(el.dataset.target, 10);
+  const decimal = parseInt(el.dataset.decimal || '0', 10);
+  const dur     = 1800;
+  const start   = performance.now();
 
   function step(now) {
     const elapsed  = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const ease     = 1 - Math.pow(1 - progress, 3);   // ease-out cubic
-    const val      = Math.floor(target * ease);
-    el.textContent = val + suffix;
+    const progress = Math.min(elapsed / dur, 1);
+    const ease     = 1 - Math.pow(1 - progress, 3);
+    const val      = Math.floor(raw * ease);
+
+    if (decimal > 0) {
+      // format as 0.XXXX (e.g. 9641 → 0.9641)
+      const str = String(val).padStart(decimal, '0');
+      el.textContent = '0.' + str;
+    } else {
+      el.textContent = val.toLocaleString();
+    }
+
     if (progress < 1) requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
@@ -91,78 +130,80 @@ const counterObserver = new IntersectionObserver((entries) => {
 const heroStats = document.querySelector('.hero-stats');
 if (heroStats) counterObserver.observe(heroStats);
 
-// ── PARTICLE CANVAS ────────────────────────────────────────────
-const canvas = document.getElementById('particle-canvas');
-const ctx    = canvas.getContext('2d');
-let particles = [];
+// ── PARTICLE CANVAS (light-mode colours) ──────────────────────
+(function initParticles() {
+  const canvas = document.getElementById('particle-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
 
-function resize() {
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
 
-function Particle() {
-  this.x    = Math.random() * canvas.width;
-  this.y    = Math.random() * canvas.height;
-  this.vx   = (Math.random() - 0.5) * 0.4;
-  this.vy   = (Math.random() - 0.5) * 0.4;
-  this.r    = Math.random() * 2 + 0.5;
-  const hue = Math.random() > 0.5 ? '#FF6B9D' : '#00D4FF';
-  this.clr  = hue;
-  this.alpha = Math.random() * 0.5 + 0.1;
-}
+  const COLORS = ['#4F46E5', '#F59E0B', '#7C3AED', '#10B981'];
 
-Particle.prototype.update = function () {
-  this.x += this.vx;
-  this.y += this.vy;
-  if (this.x < 0) this.x = canvas.width;
-  if (this.x > canvas.width)  this.x = 0;
-  if (this.y < 0) this.y = canvas.height;
-  if (this.y > canvas.height) this.y = 0;
-};
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x     = Math.random() * canvas.width;
+      this.y     = init ? Math.random() * canvas.height : -10;
+      this.vx    = (Math.random() - 0.5) * 0.5;
+      this.vy    = (Math.random() - 0.5) * 0.5;
+      this.r     = Math.random() * 2.5 + 0.8;
+      this.alpha = Math.random() * 0.4 + 0.08;
+      this.clr   = COLORS[Math.floor(Math.random() * COLORS.length)];
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < -5) this.x = canvas.width + 5;
+      if (this.x > canvas.width + 5)  this.x = -5;
+      if (this.y < -5) this.y = canvas.height + 5;
+      if (this.y > canvas.height + 5) this.y = -5;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.clr;
+      ctx.globalAlpha = this.alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
 
-Particle.prototype.draw = function () {
-  ctx.beginPath();
-  ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-  ctx.fillStyle = this.clr;
-  ctx.globalAlpha = this.alpha;
-  ctx.fill();
-  ctx.globalAlpha = 1;
-};
+  const pts = Array.from({ length: 65 }, () => new Particle());
 
-// create particles
-for (let i = 0; i < 80; i++) particles.push(new Particle());
-
-// draw connecting lines
-function drawLines() {
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      const dx   = particles[i].x - particles[j].x;
-      const dy   = particles[i].y - particles[j].y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 120) {
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = '#00D4FF';
-        ctx.globalAlpha = (1 - dist / 120) * 0.12;
-        ctx.lineWidth   = 0.5;
-        ctx.stroke();
-        ctx.globalAlpha = 1;
+  function drawLines() {
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const dx   = pts[i].x - pts[j].x;
+        const dy   = pts[i].y - pts[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 110) {
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = '#4F46E5';
+          ctx.globalAlpha = (1 - dist / 110) * 0.08;
+          ctx.lineWidth   = 0.8;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
       }
     }
   }
-}
 
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => { p.update(); p.draw(); });
-  drawLines();
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pts.forEach(p => { p.update(); p.draw(); });
+    drawLines();
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
 
 // ── LIGHTBOX ───────────────────────────────────────────────────
 const lightbox = document.getElementById('lightbox');
@@ -170,7 +211,8 @@ const lbImg    = document.getElementById('lb-img');
 const lbTitle  = document.getElementById('lb-title');
 
 function openLightbox(src, title) {
-  lbImg.src      = src;
+  lbImg.src           = src;
+  lbImg.alt           = title;
   lbTitle.textContent = title;
   lightbox.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -179,60 +221,78 @@ function openLightbox(src, title) {
 function closeLightbox() {
   lightbox.classList.remove('open');
   document.body.style.overflow = '';
-  lbImg.src = '';
+  setTimeout(() => { lbImg.src = ''; }, 300);
 }
 
-// close on Escape
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeLightbox();
 });
 
-// ── STAGGERED CARD ANIMATION DELAY ────────────────────────────
-document.querySelectorAll('.about-grid [data-animate]').forEach((el, i) => {
-  el.style.transitionDelay = `${i * 0.07}s`;
-});
-document.querySelectorAll('.viz-grid [data-animate]').forEach((el, i) => {
-  el.style.transitionDelay = `${i * 0.06}s`;
-});
-document.querySelectorAll('.insights-grid [data-animate]').forEach((el, i) => {
-  el.style.transitionDelay = `${i * 0.07}s`;
-});
-document.querySelectorAll('.tech-grid [data-animate]').forEach((el, i) => {
-  el.style.transitionDelay = `${i * 0.06}s`;
-});
-document.querySelectorAll('.pipeline-step[data-animate]').forEach((el, i) => {
-  el.style.transitionDelay = `${i * 0.1}s`;
-});
-document.querySelectorAll('.models-grid [data-animate]').forEach((el, i) => {
-  el.style.transitionDelay = `${i * 0.12}s`;
+// ── BACK TO TOP ────────────────────────────────────────────────
+const btt = document.getElementById('back-to-top');
+window.addEventListener('scroll', () => {
+  btt.classList.toggle('visible', window.scrollY > 400);
+}, { passive: true });
+
+btt.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// ── ACTIVE NAV STYLE ───────────────────────────────────────────
-const style = document.createElement('style');
-style.textContent = `.nav-links a.active { color: var(--cyan) !important; }`;
-document.head.appendChild(style);
+// ── SMOOTH HOVER TILT ON VIZ CARDS ────────────────────────────
+document.querySelectorAll('.viz-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x    = (e.clientX - rect.left) / rect.width  - 0.5;
+    const y    = (e.clientY - rect.top)  / rect.height - 0.5;
+    card.style.transform = `translateY(-5px) rotateX(${-y * 4}deg) rotateY(${x * 4}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
 
-// ── TOOLTIP FOR SPLIT BAR ──────────────────────────────────────
-document.querySelectorAll('.split-seg').forEach(seg => {
+// ── SPLIT BAR TOOLTIPS ─────────────────────────────────────────
+document.querySelectorAll('.split-seg[title]').forEach(seg => {
+  let tip;
   seg.addEventListener('mouseenter', e => {
-    const tip = document.createElement('div');
-    tip.className = 'seg-tooltip';
+    tip = document.createElement('div');
     tip.textContent = seg.title;
-    tip.style.cssText = `
-      position:fixed;top:${e.clientY-34}px;left:${e.clientX}px;
-      background:rgba(0,0,0,0.85);color:#fff;padding:5px 12px;
-      border-radius:6px;font-size:0.78rem;pointer-events:none;z-index:999;
-      border:1px solid rgba(255,255,255,0.1);
-    `;
+    Object.assign(tip.style, {
+      position: 'fixed',
+      top: (e.clientY - 36) + 'px',
+      left: e.clientX + 'px',
+      background: '#111827',
+      color: '#F9FAFB',
+      padding: '5px 12px',
+      borderRadius: '6px',
+      fontSize: '0.78rem',
+      fontFamily: "'Inter', sans-serif",
+      fontWeight: '600',
+      pointerEvents: 'none',
+      zIndex: '9999',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+      transform: 'translateX(-50%)',
+    });
     document.body.appendChild(tip);
-    seg._tip = tip;
   });
-  seg.addEventListener('mouseleave', () => {
-    if (seg._tip) { seg._tip.remove(); seg._tip = null; }
-  });
+  seg.addEventListener('mouseleave', () => { if (tip) { tip.remove(); tip = null; } });
 });
 
-// ── LOG ────────────────────────────────────────────────────────
-console.log('%c🚗 CarPredictAI', 'color:#FF6B9D;font-size:20px;font-weight:bold;');
-console.log('%cCodeAlpha Data Science Internship — May 2026', 'color:#00D4FF;font-size:12px;');
-console.log('%cAuthor: Vilash Kumar Reddy', 'color:#FFD700;font-size:12px;');
+// ── DOWNLOAD BUTTON FEEDBACK ────────────────────────────────────
+const dlBtn = document.getElementById('dl-csv');
+if (dlBtn) {
+  dlBtn.addEventListener('click', () => {
+    const orig = dlBtn.textContent;
+    dlBtn.textContent = '✅ Downloading…';
+    dlBtn.style.background = 'var(--emerald)';
+    setTimeout(() => {
+      dlBtn.textContent = orig;
+      dlBtn.style.background = '';
+    }, 2500);
+  });
+}
+
+// ── CONSOLE BRANDING ───────────────────────────────────────────
+console.log('%c🚗 CarPredictAI', 'color:#4F46E5;font-size:22px;font-weight:900;font-family:Inter,sans-serif');
+console.log('%cCodeAlpha Data Science Internship — May 2026', 'color:#F59E0B;font-size:13px;font-weight:600');
+console.log('%cAuthor: Vilash Kumar Reddy  |  Best R²: 0.9641', 'color:#6B7280;font-size:12px');
